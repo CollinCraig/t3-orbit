@@ -15,6 +15,7 @@ export type Look = {
   border: string;
   input: string;
   text: string;
+  mdText: string;
   muted: string;
   muted2: string;
   accent: string;
@@ -46,6 +47,7 @@ export const plain: Look = {
   border: 'rgba(255,255,255,0.08)',
   input: 'rgba(255,255,255,0.11)',
   text: '#f5f5f5',
+  mdText: '#f5f5f5',
   muted: '#a3a3a3',
   muted2: '#7a7a7a',
   accent: 'oklch(57.1% 0.21 264)',
@@ -77,8 +79,9 @@ export const orbit: Look = {
   border: c.border,
   input: c.input,
   text: c.text,
-  muted: c.textMuted,
-  muted2: '#7E7F80',
+  mdText: '#ECEEF6', // --hi (.dark .chat-markdown)
+  muted: '#9AA1B5', // --mu, v1.1 cooler blue-grey
+  muted2: '#7A8197', // --mu2
   accent: c.accent,
   accentFg: c.accentForeground,
   bubble: c.messageSurface,
@@ -95,13 +98,21 @@ export const orbit: Look = {
   sendBg: c.accent,
   sendShadow: '0 0 14px #8B7CF666',
   composerShadow: '0 0 0 3px #8B7CF61c,0 10px 34px #4FB6E812',
-  newChatBg: c.accent,
+  newChatBg: 'linear-gradient(90deg,#7A6AF0,#3E9FD6)', // v1.1 New chat
   newChatFg: '#ffffff',
   radius: 10,
   orbit: true,
 };
 
-export const WORDMARK_GRADIENT = 'linear-gradient(90deg,#A99DFA,#6FD3FF)';
+// v1.1: violet→cyan→violet at 200% width, background-position slides 0→200% over 8 s (@keyframes o)
+export const WORDMARK_GRADIENT = 'linear-gradient(90deg,#A99DFA,#6FD3FF,#A99DFA)';
+export const shimmer = (frame: number, fps = 30) => ({
+  background: WORDMARK_GRADIENT,
+  backgroundSize: '200% 100%',
+  backgroundPosition: `${((frame / (8 * fps)) % 1) * 200}% 0`,
+  WebkitBackgroundClip: 'text' as const,
+  color: 'transparent',
+});
 export const ORBIT_ICON_GRADIENT = 'linear-gradient(135deg,#8B7CF6,#4FB6E8)';
 export const FONT = '"Inter Orbit", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
 export const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';

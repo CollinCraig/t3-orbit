@@ -1,23 +1,29 @@
 // A mock of the T3 Code window, demo data only. Every name, title and path here is made up.
 import React from 'react';
-import {Look, FONT, MONO, WORDMARK_GRADIENT, ORBIT_ICON_GRADIENT} from './theme';
+import {Look, FONT, MONO, ORBIT_ICON_GRADIENT, shimmer} from './theme';
 
 export const WIN_W = 1600;
 export const WIN_H = 900;
 export const SIDEBAR_W = 290;
 
-type Row = {title: string; sub: string; time: string; kind: 'project' | 'none'; mono?: string; hue?: string; active?: boolean; pinned?: boolean};
+type Row = {title: string; sub: string; time: string; kind: 'project' | 'none'; mono?: string; hue?: string; active?: boolean; pinned?: boolean; working?: boolean};
 
 const ROWS: Row[] = [
-  {title: 'Refactor auth', sub: 'web-app', time: '4m', kind: 'project', mono: 'W', hue: '#3f8f6b'},
+  {title: 'Refactor auth', sub: 'web-app', time: 'now', kind: 'project', mono: 'W', hue: '#3f8f6b', working: true},
   {title: 'Fix flaky test', sub: 'api', time: '12m', kind: 'project', mono: 'A', hue: '#b86b3a'},
   {title: 'Ship v2', sub: 'orbit-app', time: '18m', kind: 'project', mono: 'O', hue: '#5b6bd6', active: true, pinned: true},
   {title: 'Plan the launch', sub: 'No project', time: '1h', kind: 'none'},
   {title: 'Release notes', sub: 'No project', time: '2h', kind: 'none', pinned: true},
   {title: 'Tidy CSS tokens', sub: 'web-app', time: '3h', kind: 'project', mono: 'W', hue: '#3f8f6b'},
   {title: 'Sketch onboarding', sub: 'No project', time: '1d', kind: 'none'},
-  {title: 'Bump deps', sub: 'api', time: '2d', kind: 'project', mono: 'A', hue: '#b86b3a'},
 ];
+
+// A generic model mark for the compact rows (stands in for the provider logo; deliberately not any vendor's logo).
+const ModelMark = ({color}: {color: string}) => (
+  <svg width={13} height={13} viewBox="0 0 24 24" fill={color}>
+    <path d="M12 2c.6 4.8 2.9 7.4 10 10-7.1 2.6-9.4 5.2-10 10-.6-4.8-2.9-7.4-10-10 7.1-2.6 9.4-5.2 10-10z" />
+  </svg>
+);
 
 // lucide-style icons, stroke 1.6
 const I = ({d, size = 16, color = 'currentColor', sw = 1.6}: {d: React.ReactNode; size?: number; color?: string; sw?: number}) => (
@@ -40,24 +46,24 @@ export const icons = {
   file: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></>,
 };
 
-export const OrbitGlyph = ({size}: {size: number}) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8}>
+export const OrbitGlyph = ({size, spin = 0}: {size: number; spin?: number}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} style={{transform: `rotate(${spin}deg)`}}>
     <circle cx="12" cy="12" r="3.2" />
     <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(-25 12 12)" />
   </svg>
 );
 
-const RowIcon = ({r, look}: {r: Row; look: Look}) => {
+const RowIcon = ({r, look, size = 22, spin = 0}: {r: Row; look: Look; size?: number; spin?: number}) => {
   if (r.kind === 'project')
     return (
-      <div style={{width: 22, height: 22, borderRadius: look.orbit ? 5 : 4, background: r.hue, color: '#fff', fontSize: 12, fontWeight: 600, display: 'grid', placeItems: 'center'}}>
+      <div style={{width: size, height: size, borderRadius: look.orbit ? 5 : 4, background: r.hue, color: '#fff', fontSize: size > 20 ? 12 : 10.5, fontWeight: 600, display: 'grid', placeItems: 'center'}}>
         {r.mono}
       </div>
     );
   if (look.orbit)
     return (
-      <div style={{width: 22, height: 22, borderRadius: 6, background: ORBIT_ICON_GRADIENT, display: 'grid', placeItems: 'center'}}>
-        <OrbitGlyph size={16} />
+      <div style={{width: size, height: size, borderRadius: 6, background: ORBIT_ICON_GRADIENT, display: 'grid', placeItems: 'center'}}>
+        <OrbitGlyph size={size - 6} spin={spin} />
       </div>
     );
   return (
@@ -67,32 +73,42 @@ const RowIcon = ({r, look}: {r: Row; look: Look}) => {
   );
 };
 
-const ThreadRow = ({r, look, hi}: {r: Row; look: Look; hi?: number}) => (
+const ThreadRow = ({r, look, hi, compact, hover, spin}: {r: Row; look: Look; hi?: number; compact?: boolean; hover?: boolean; spin?: number}) => (
   <div
     style={{
       position: 'relative',
       margin: '1px 8px',
-      padding: '8px 10px',
+      padding: compact ? '5px 10px' : '8px 10px',
       borderRadius: look.radius,
       display: 'grid',
-      gridTemplateColumns: '24px minmax(0,1fr) auto',
-      gridTemplateRows: '20px 18px',
+      gridTemplateColumns: compact ? '22px minmax(0,1fr) auto auto' : '24px minmax(0,1fr) auto',
+      gridTemplateRows: compact ? '20px' : '20px 18px',
       columnGap: 9,
       rowGap: 2,
       alignItems: 'center',
-      background: r.active ? look.activeRow : 'transparent',
+      background: r.active ? look.activeRow : hover ? 'rgba(127,127,127,.1)' : 'transparent',
       boxShadow: r.active ? look.activeRowShadow : 'none',
     }}
   >
     {hi ? <div style={{position: 'absolute', inset: -2, borderRadius: look.radius + 2, boxShadow: `0 0 0 2px rgba(139,124,246,${0.9 * hi}), 0 0 24px rgba(111,211,255,${0.35 * hi})`}} /> : null}
-    <div style={{gridColumn: 1, gridRow: '1 / 3', justifySelf: 'center'}}>
-      <RowIcon r={r} look={look} />
+    <div style={{gridColumn: 1, gridRow: compact ? 1 : '1 / 3', justifySelf: 'center', display: 'grid'}}>
+      <RowIcon r={r} look={look} size={compact ? 18 : 22} spin={spin} />
     </div>
     <div style={{gridColumn: 2, gridRow: 1, fontSize: 14, color: r.active ? '#fff' : look.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
       {r.title}
     </div>
-    <div style={{gridColumn: 3, gridRow: 1, fontSize: 12, color: look.muted2}}>{r.time}</div>
-    <div style={{gridColumn: 2, gridRow: 2, fontSize: 12, color: look.muted}}>{r.sub}</div>
+    {compact ? (
+      <>
+        <div style={{gridColumn: 3, gridRow: 1, display: 'grid', opacity: 0.8}}><ModelMark color={look.muted} /></div>
+        <div style={{gridColumn: 4, gridRow: 1, fontSize: 12, color: look.muted2}}>{r.time}</div>
+      </>
+    ) : (
+      <div style={{gridColumn: 3, gridRow: 1, fontSize: 12, color: r.working ? (look.orbit ? '#A99DFA' : look.muted) : look.muted2, display: 'flex', alignItems: 'center', gap: 5}}>
+        {r.working ? <span style={{width: 6, height: 6, borderRadius: 9, background: look.orbit ? '#8B7CF6' : look.muted, boxShadow: look.orbit ? '0 0 6px #8B7CF6' : 'none'}} /> : null}
+        {r.working ? 'Working' : r.time}
+      </div>
+    )}
+    {compact ? null : <div style={{gridColumn: 2, gridRow: 2, fontSize: 12, color: look.muted}}>{r.sub}</div>}
     {!look.orbit && r.pinned ? (
       <div style={{gridColumn: 3, gridRow: 2, justifySelf: 'end', color: look.muted2}}>
         <I d={icons.pin} size={12} />
@@ -101,23 +117,38 @@ const ThreadRow = ({r, look, hi}: {r: Row; look: Look; hi?: number}) => (
   </div>
 );
 
+const Shelf = ({label, count, look, open, style}: {label: string; count: number; look: Look; open?: boolean; style?: React.CSSProperties}) => (
+  <div style={{height: 32, margin: '4px 8px', padding: '0 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 500, color: look.muted, borderRadius: 10}}>
+    <span style={style}>{label}</span>
+    <span style={{fontSize: 12, color: look.orbit ? '#8A91A6' : look.muted2, fontWeight: 400}}>{count}</span>
+    <span style={{display: 'grid', opacity: 0.8, transform: open ? undefined : 'rotate(-90deg)'}}><I d={icons.chevron} size={13} /></span>
+  </div>
+);
+
 const SectionLabel = ({children, look}: {children: React.ReactNode; look: Look}) => (
   <div style={{padding: '12px 22px 4px', fontSize: 13.5, fontWeight: 500, color: look.muted}}>{children}</div>
 );
 
-export type Focus = {pinned?: number; orbitIcons?: number; font?: number; glow?: number};
+export type Focus = {names?: number; pinned?: number; compact?: number; orbitIcons?: number; hover?: string; spin?: number; font?: number; glow?: number};
 
-const Sidebar = ({look, focus}: {look: Look; focus: Focus}) => {
+const Sidebar = ({look, focus, frame}: {look: Look; focus: Focus; frame: number}) => {
   const pinned = ROWS.filter((r) => r.pinned);
-  const rest = look.orbit ? ROWS.filter((r) => !r.pinned) : ROWS;
+  const working = ROWS.filter((r) => r.working);
+  const rest = ROWS.filter((r) => !r.working && !(look.orbit && r.pinned));
+  const N = look.orbit
+    ? {pinned: 'Flight Directors', working: 'Active Crew', snoozed: 'In Orbit', settled: 'Landed', recents: 'Mission Log', newChat: 'New mission'}
+    : {pinned: '', working: 'Working', snoozed: 'Snoozed', settled: 'Settled', recents: 'Threads', newChat: 'New thread'};
+  const nameHi = focus.names ?? 0;
+  const nameStyle: React.CSSProperties = nameHi ? {color: `color-mix(in srgb, #C9C2FF ${Math.round(nameHi * 100)}%, ${look.muted})`, textShadow: `0 0 ${12 * nameHi}px rgba(139,124,246,${0.8 * nameHi})`} : {};
   const hiRow = (r: Row) => (look.orbit && r.kind === 'none' ? focus.orbitIcons : undefined);
+  const rowProps = (r: Row) => ({hover: look.orbit && focus.hover === r.title, spin: look.orbit && focus.hover === r.title ? focus.spin : 0});
   return (
     <div style={{width: SIDEBAR_W, flex: `0 0 ${SIDEBAR_W}px`, background: look.sidebar, borderRight: `1px solid ${look.orbit ? 'rgba(127,127,127,.12)' : look.border}`, display: 'flex', flexDirection: 'column'}}>
       {/* wordmark */}
       <div style={{height: 52, display: 'flex', alignItems: 'center', gap: 5, padding: '0 18px 0 84px', fontSize: 14.5, color: look.text}}>
         <span style={{fontWeight: 700, letterSpacing: '-.02em'}}>T3</span>
         {look.orbit ? (
-          <span style={{fontWeight: 600, letterSpacing: '-.01em', background: WORDMARK_GRADIENT, WebkitBackgroundClip: 'text', color: 'transparent'}}>Orbit</span>
+          <span style={{fontWeight: 600, letterSpacing: '-.01em', ...shimmer(frame)}}>Orbit</span>
         ) : (
           <span style={{fontWeight: 500, color: look.muted}}>Code</span>
         )}
@@ -131,10 +162,10 @@ const Sidebar = ({look, focus}: {look: Look; focus: Focus}) => {
             <I d={ic as React.ReactNode} size={16} color={look.muted} /> {label as string}
           </div>
         ))}
-        <div style={{position: 'relative', marginTop: 8, height: 36, borderRadius: 8, background: look.newChatBg, color: look.newChatFg, border: look.orbit ? 'none' : `1px solid ${look.border}`, boxShadow: look.orbit ? '0 1px 2px rgba(0,0,0,.25)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 14, fontWeight: 500}}>
-          <I d={icons.edit} size={16} color={look.newChatFg} /> {look.orbit ? 'New chat' : 'New thread'}
+        <div style={{position: 'relative', marginTop: look.orbit ? 6 : 8, height: look.orbit ? 30 : 36, borderRadius: 8, background: look.newChatBg, color: look.newChatFg, border: look.orbit ? 'none' : `1px solid ${look.border}`, boxShadow: look.orbit ? '0 1px 2px rgba(0,0,0,.25)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: look.orbit ? 7 : 8, fontSize: look.orbit ? 13 : 14, fontWeight: 500}}>
+          <I d={icons.edit} size={16} color={look.newChatFg} /> <span style={look.orbit ? {...nameStyle, color: nameHi ? nameStyle.color : '#fff'} : undefined}>{N.newChat}</span>
           {look.orbit ? (
-            <span style={{position: 'absolute', right: 12, fontSize: 12, fontWeight: 500, letterSpacing: '.04em', color: 'rgba(255,255,255,.8)', background: 'rgba(0,0,0,.14)', padding: '2px 6px', borderRadius: 5}}>⌘N</span>
+            <span style={{position: 'absolute', right: 10, fontSize: 11.5, fontWeight: 500, letterSpacing: '.04em', color: 'rgba(255,255,255,.8)', background: 'rgba(0,0,0,.14)', padding: '2px 6px', borderRadius: 5}}>⌘N</span>
           ) : null}
         </div>
       </div>
@@ -142,14 +173,20 @@ const Sidebar = ({look, focus}: {look: Look; focus: Focus}) => {
         {look.orbit ? (
           <div style={{position: 'relative'}}>
             {focus.pinned ? <div style={{position: 'absolute', inset: '2px 4px -2px', borderRadius: 12, boxShadow: `0 0 0 2px rgba(139,124,246,${0.9 * focus.pinned}), 0 0 30px rgba(111,211,255,${0.3 * focus.pinned})`}} /> : null}
-            <SectionLabel look={look}>Pinned</SectionLabel>
-            {pinned.map((r) => <ThreadRow key={r.title} r={r} look={look} hi={hiRow(r)} />)}
+            <SectionLabel look={look}><span style={nameStyle}>{N.pinned}</span></SectionLabel>
+            {pinned.map((r) => <ThreadRow key={r.title} r={r} look={look} hi={focus.compact || hiRow(r)} compact {...rowProps(r)} />)}
           </div>
         ) : null}
-        <SectionLabel look={look}>{look.orbit ? 'Recents' : 'Threads'}</SectionLabel>
-        {rest.map((r) => <ThreadRow key={r.title} r={r} look={look} hi={hiRow(r)} />)}
+        <Shelf label={N.working} count={working.length} style={nameStyle} look={look} open />
+        {working.map((r) => <ThreadRow key={r.title} r={r} look={look} {...rowProps(r)} />)}
+        <SectionLabel look={look}><span style={nameStyle}>{N.recents}</span></SectionLabel>
+        {rest.map((r) => <ThreadRow key={r.title} r={r} look={look} hi={hiRow(r)} {...rowProps(r)} />)}
       </div>
-      <div style={{marginTop: 'auto', padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 9, color: look.muted, fontSize: 13.5}}>
+      <div style={{marginTop: 'auto'}}>
+        <Shelf label={N.snoozed} count={2} style={nameStyle} look={look} />
+        <Shelf label={N.settled} count={5} style={nameStyle} look={look} />
+      </div>
+      <div style={{padding: '8px 18px 14px', display: 'flex', alignItems: 'center', gap: 9, color: look.muted, fontSize: 13.5}}>
         <I d={icons.settings} size={16} /> Settings
       </div>
     </div>
@@ -159,7 +196,7 @@ const Sidebar = ({look, focus}: {look: Look; focus: Focus}) => {
 const Chat = ({look, focus, typed}: {look: Look; focus: Focus; typed: string}) => {
   const fontHi = focus.font ?? 0;
   const glow = focus.glow ?? 0;
-  const md: React.CSSProperties = {fontSize: look.orbit ? 15 : 14, lineHeight: look.orbit ? 1.55 : 1.5, color: look.text, letterSpacing: look.orbit ? '-.002em' : 0};
+  const md: React.CSSProperties = {fontSize: 14, lineHeight: 1.625, color: look.mdText};
   return (
     <div style={{flex: 1, display: 'flex', flexDirection: 'column', background: look.conversationBg, minWidth: 0}}>
       {/* header */}
@@ -184,7 +221,7 @@ const Chat = ({look, focus, typed}: {look: Look; focus: Focus; typed: string}) =
           </div>
           <div style={{position: 'relative', ...md}}>
             {fontHi ? <div style={{position: 'absolute', inset: '-14px -18px', borderRadius: 14, boxShadow: `0 0 0 2px rgba(139,124,246,${0.85 * fontHi}), 0 0 40px rgba(111,211,255,${0.25 * fontHi})`}} /> : null}
-            <p style={{margin: '0 0 .75em'}}>
+            <p style={{margin: '0 0 .6em'}}>
               On it. The suite is green and I fixed the one flaky test in{' '}
               <code style={{fontFamily: MONO, fontSize: '.86em', padding: '.12em .38em', borderRadius: 5, background: 'rgba(127,127,127,.16)'}}>checkout.spec.ts</code>. Here’s the plan:
             </p>
@@ -239,12 +276,12 @@ const Chat = ({look, focus, typed}: {look: Look; focus: Focus; typed: string}) =
   );
 };
 
-export const AppWindow = ({look, focus = {}, typed = ''}: {look: Look; focus?: Focus; typed?: string}) => (
+export const AppWindow = ({look, focus = {}, typed = '', frame = 0}: {look: Look; focus?: Focus; typed?: string; frame?: number}) => (
   <div style={{width: WIN_W, height: WIN_H, display: 'flex', background: look.canvas, fontFamily: FONT, color: look.text, position: 'relative', overflow: 'hidden', WebkitFontSmoothing: 'antialiased'}}>
     <div style={{position: 'absolute', left: 20, top: 20, display: 'flex', gap: 8, zIndex: 2}}>
       {['#ff5f57', '#febc2e', '#28c840'].map((c) => <div key={c} style={{width: 12, height: 12, borderRadius: 99, background: c}} />)}
     </div>
-    <Sidebar look={look} focus={focus} />
+    <Sidebar look={look} focus={focus} frame={frame} />
     <Chat look={look} focus={focus} typed={typed} />
   </div>
 );
