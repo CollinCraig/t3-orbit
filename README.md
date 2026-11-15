@@ -1,50 +1,32 @@
-# T3 Clawd
+# T3 Orbit
 
-A Claude-inspired theme for T3 Code.
+A dark, space-themed theme for [T3 Code](https://github.com/pingdotgg/t3code). Deep navy, a violet-to-cyan accent, and a little orbit.
 
-![T3 Clawd](media/poster.png)
+T3 Orbit is a fork of [T3 Clawd](https://github.com/rohit3a/t3-clawd) by [@rohit3a](https://x.com/rohit3a). It keeps Clawd's layout work and swaps the look for a nightly, deep-space one. It's one theme file: no app fork, no source changes.
 
-One theme file. No fork, no source changes. Built entirely on T3 Code's theme system, using 18k of its 20k-character CSS limit.
+## What's different from T3 Clawd
 
-## What changes
+- Deep-space palette: navy-black surfaces, a violet accent, and a soft nebula glow behind the chat
+- T3 Code's own font instead of an override
+- **Pinned chats are back on top** under a "Pinned" label
+- Chats without a project get a small violet orbit icon
+- A gradient "T3 Orbit" wordmark, a glowing send button, and a highlighted current chat
+- Dark mode only
 
-- Claude's colors, font, and light mode
-- Header renamed to "T3 Clawd"
-- Real sidebar menu: search bar, Projects, Add project
-- Big clay "New chat" button with ⌘N
-- Live timer instead of the "Working" spinner
-- Clean 2-line chat rows
-- One-column model picker
-- Effort levels as a segmented bar
-- One-line project picker with device tags
-- Clay buttons and switches everywhere
+Clawd's layout work is unchanged: the sidebar menu, the New chat button with ⌘N, the two-line chat rows, the model picker and the effort bar.
 
 ## Install
 
-1. Download [`t3-clawd.json`](https://raw.githubusercontent.com/rohit3a/t3-clawd/main/t3-clawd.json).
+1. Download [`t3-orbit.json`](https://raw.githubusercontent.com/CollinCraig/t3-orbit/main/t3-orbit.json).
 2. In T3 Code, open **Settings → Appearance** and click **Add a theme**.
-3. Drop the file in (or paste its contents into **Theme JSON**), then pick **T3 Clawd**.
-
-Dark and light mode are both included.
-
-## Preview
-
-| Sidebar | Working timer | Model picker |
-| --- | --- | --- |
-| ![Sidebar](media/sidebar.gif) | ![Working timer](media/working-timer.gif) | ![Model picker](media/model-picker.gif) |
-
-**Before and after**
-
-![Before and after](media/before-after.png)
-
-[Watch the launch film](media/t3-clawd-film.mp4). Every frame of it was rendered from HTML, and the music was synthesized from scratch.
+3. Drop the file in (or paste its contents into **Theme JSON**), then pick **T3 Orbit**.
 
 ## Notes
 
-- Built on T3 Code Nightly (November 2026). The theme styles the app through its internal attributes, so a T3 Code update may break a piece or two. If something looks off, open an issue.
-- Previews come from the launch film and use demo data.
-- Unofficial. Not affiliated with Anthropic or T3. Claude is a trademark of Anthropic.
+- Built on T3 Code Nightly (November 2026). Themes style the app through its internal attributes, so a T3 Code update may break a piece. If something looks off, open an issue.
+- It uses about 19.7k of T3 Code's 20k-character theme CSS limit.
+- Unofficial. Not affiliated with T3.
 
-## License
+## Credits and license
 
-MIT. Made by [@rohit3a](https://x.com/rohit3a).
+MIT. The original theme is [T3 Clawd](https://github.com/rohit3a/t3-clawd) by @rohit3a. T3 Orbit's changes are by [Collin Craig](https://x.com/CollinCraigAI).
