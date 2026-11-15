@@ -19,13 +19,13 @@ const CAM: [number, number, number, number][] = [
   [0, 1, 800, 450],
   [T.settingsOpen - 10, 1.1, 800, 450],
   [T.morphStart, 1.0, 800, 450],
-  [F[0] - 18, 1.9, 240, 290],
-  [F[1] - 14, 1.15, 360, 470],
-  [F[2] - 14, 2.5, 190, 280],
-  [F[3] - 14, 1.7, 240, 520],
-  [F[4] - 14, 2.5, 170, 530],
-  [F[5] - 14, 1.65, 930, 340],
-  [F[6] - 14, 1.6, 960, 690],
+  [F[0] - 18, 1.9, 260, 285],
+  [F[1] - 14, 1.15, 380, 470],
+  [F[2] - 14, 2.4, 210, 285],
+  [F[3] - 14, 1.55, 260, 470],
+  [F[4] - 14, 2.5, 185, 536],
+  [F[5] - 14, 1.45, 965, 560],
+  [F[6] - 14, 1.6, 1000, 740],
   [T.endCard - 10, 0.92, 800, 450],
 ];
 const camera = (f: number) => {
@@ -166,7 +166,7 @@ export const Film = ({square = false, withAudio = true}: {square?: boolean; with
   const chipScale = f >= T.drop ? 1 - ramp(f, T.drop, T.drop + 6) : 1;
   const clickPulse = (k: number) => Math.max(0, 1 - Math.abs(f - k) / 4);
   const press = Math.max(clickPulse(T.clickAdd), clickPulse(T.drop), clickPulse(T.selectOrbit));
-  const HOVER = {x: 160, y: 531}; // "Plan the launch" row in the Orbit sidebar
+  const HOVER = {x: 200, y: 536}; // "Plan the launch" row in the Orbit sidebar
   const hoverCursor = f >= F[4] - 4 && f < F[4] + T.featureLen;
   if (hoverCursor) {
     const p = ramp(f, F[4] - 4, F[4] + 12);
@@ -201,7 +201,7 @@ export const Film = ({square = false, withAudio = true}: {square?: boolean; with
   const inner = (
     <div style={{position: 'absolute', left: 0, top: 0, width: WIN_W, height: WIN_H}}>
       <div style={{position: 'absolute', inset: 0, borderRadius: 14, overflow: 'hidden', boxShadow: spaceOn > 0 ? `0 40px 120px rgba(0,0,0,.7), 0 0 0 1px rgba(139,124,246,${0.25 * spaceOn}), 0 0 80px rgba(139,124,246,${0.12 * spaceOn})` : '0 40px 120px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08)'}}>
-        {!morphed ? <AppWindow look={plain} /> : null}
+        {!morphed ? <AppWindow look={plain} frame={f} /> : null}
         {f >= T.morphStart ? (
           <div style={{position: 'absolute', inset: 0, clipPath: morphed ? undefined : `circle(${R}px at ${ORBIT_CARD.x}px ${ORBIT_CARD.y}px)`}}>
             <AppWindow look={orbit} focus={focus} typed={typed} frame={f} />

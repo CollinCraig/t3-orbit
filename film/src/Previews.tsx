@@ -22,7 +22,7 @@ export const PreviewSidebar = () => {
   const focus: Focus = {names};
   return (
     <AbsoluteFill style={{background: BG}}>
-      <Crop x={0} y={0} w={640} h={470} scale={1.125} left={20} top={16}>
+      <Crop x={0} y={0} w={700} h={586} scale={0.95} left={47} top={2}>
         <AppWindow look={orbit} focus={focus} frame={f} />
       </Crop>
     </AbsoluteFill>
@@ -37,14 +37,14 @@ export const PreviewHover = () => {
   const win = <AppWindow look={orbit} focus={focus} frame={f} />;
   return (
     <AbsoluteFill style={{background: BG, fontFamily: FONT}}>
-      <Crop x={72} y={10} w={140} h={34} scale={3.4} left={(720 - 476) / 2} top={22} radius={12}>
+      <Crop x={86} y={12} w={140} h={34} scale={3.4} left={(720 - 476) / 2} top={22} radius={12}>
         {win}
       </Crop>
-      <div style={{position: 'absolute', left: 50, top: 168}}>
-        <Crop x={10} y={444} w={280} h={176} scale={2.2} left={0} top={0}>
+      <div style={{position: 'absolute', left: 40, top: 172}}>
+        <Crop x={8} y={476} w={320} h={180} scale={2.0} left={0} top={0}>
           {win}
         </Crop>
-        <div style={{position: 'absolute', left: (160 - 10) * 2.2, top: (531 - 444) * 2.2}}>
+        <div style={{position: 'absolute', left: (200 - 8) * 2.0, top: (536 - 476) * 2.0}}>
           <div style={{transform: 'scale(1.6)', transformOrigin: '4px 3px'}}>
             <Cursor />
           </div>

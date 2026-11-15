@@ -113,7 +113,7 @@ $jobs = @(@{id = 'orbit-16x9'; out = 't3-orbit-film'}) + $(if ($NoSquare) { @() 
 foreach ($jb in $jobs) {
   Step "render-$($jb.id)" node (@($remotion, 'render', 'out/bundle', $jb.id, "out/raw-$($jb.id).mp4", '--codec=h264', '--crf=12', '--x264-preset=veryfast', '--muted') + $common)
   Step "encode-$($jb.id)" $ffmpeg @('-hide_banner', '-y', '-i', "out/raw-$($jb.id).mp4", '-i', 'out/score-16.wav', '-map', '0:v', '-map', '1:a',
-    '-c:v', 'h264_nvenc', '-preset', 'p7', '-tune', 'hq', '-multipass', 'fullres', '-rc', 'vbr', '-cq', '23', '-b:v', '0', '-maxrate', '9M', '-bufsize', '18M',
+    '-c:v', 'h264_nvenc', '-preset', 'p7', '-tune', 'hq', '-multipass', 'fullres', '-rc', 'vbr', '-cq', '25', '-b:v', '0', '-maxrate', '8M', '-bufsize', '18M',
     '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-shortest', '-movflags', '+faststart', "out/$($jb.out).mp4")
 }
 }
