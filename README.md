@@ -4,20 +4,23 @@ A dark, space-themed theme for [T3 Code](https://github.com/pingdotgg/t3code). I
 
 ![T3 Orbit](media/poster.png)
 
-T3 Orbit is a fork of [T3 Clawd](https://github.com/rohit3a/t3-clawd) by [@rohit3a](https://x.com/rohit3a). It keeps Clawd's layout work and swaps the look for a nightly, deep-space one. It's one theme file: no app fork and no source changes, using about 19.6k of T3 Code's 20k-character CSS limit.
+T3 Orbit is a fork of [T3 Clawd](https://github.com/rohit3a/t3-clawd) by [@rohit3a](https://x.com/rohit3a). It keeps Clawd's layout work and swaps the look for a nightly, deep-space one. It's one theme file: no app fork and no source changes. Version 2 uses about 22k of T3 Code's 50,000-character CSS limit.
 
 ## What changes
 
-- Deep-space palette: navy-black surfaces, a violet accent, neutral muted tracks and a soft nebula glow behind the chat
+- Deep-space palette: near-black navy surfaces, a violet accent and a soft nebula glow behind the chat
+- **New in v2:** a slow-drifting, twinkling starfield behind the chat
+- **New in v2:** a rotating violet-to-cyan border on the composer while you type, a breathing send button, and new messages that fade up into place
+- **New in v2:** smoother hover states, menus that ease in, and a New mission gradient that slides on hover
+- **New in v2:** a light mode (soft white with the same violet)
 - **Pinned chats are back on top** as Flight Directors
 - Space crew names: Flight Directors (pinned), Active Crew, In Orbit, Landed, Mission Log, New mission
 - Compact Flight Directors rows: icon, title, model logo and time
 - Chats without a project get a small violet orbit icon, which spins on hover
-- A slowly shimmering gradient "T3 Orbit" wordmark, a glowing send button, and a violet bar on the current chat
-- A slimmer gradient New mission button with ⌘N
-- T3 Code's own font and message typography
-- Animations respect Reduce Motion
-- Dark mode only
+- A slowly shimmering gradient "T3 Orbit" wordmark and a violet bar on the current chat
+- T3 Code's own chat typography: message text, bubbles and code blocks are untouched
+- More of the look uses T3 Code's built-in color roles, so it holds up better across updates
+- All motion stops when Reduce Motion is on
 
 Clawd's layout work is unchanged: the sidebar menu, the two-line chat rows, the model picker and the effort bar.
 
